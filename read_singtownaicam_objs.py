@@ -7,11 +7,10 @@ from pyb import UART
 
 uart = UART(3, 9600, timeout=10)
 
-def check_crc(message, crc8):
+def check_crc(message):
     '''
     return 0 if no mistake
     '''
-    message += bytes([crc8])
     crc = 0
     for m in message:
         crc ^= m
@@ -49,15 +48,11 @@ def read_singtownaicam_objs(uart):
         if num == -1:
             print("error: num timeout")
             continue
-        payload = uart.read(num*10)
-        if len(payload) != num*10:
+        payload = uart.read(num*10+1)
+        if len(payload) != (num*10+1):
             print("error: payload length not match")
             continue
-        crc = uart.readchar()
-        if num == -1:
-            print("error: crc timeout")
-            continue
-        if check_crc(bytes([num])+payload, crc) != 0:
+        if check_crc(bytes([num])+payload) != 0:
             print('error: crc')
             continue
         objs = []
