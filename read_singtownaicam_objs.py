@@ -5,7 +5,7 @@ import struct
 import time
 from pyb import UART
 
-uart = UART(3, 9600, timeout=10)
+uart = UART(3, 115200, timeout=10)
 
 def check_crc(message):
     '''
